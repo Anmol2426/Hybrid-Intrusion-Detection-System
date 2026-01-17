@@ -6,35 +6,92 @@ This system captures live network traffic, processes it into structured data, an
 
 ---
 
+## Overview
+
+Modern networks face constantly evolving threats where traditional signature-based detection alone is insufficient. This project demonstrates a hybrid IDS approach by integrating rule-based detection with unsupervised machine learning to improve visibility into both known and unknown attack patterns.
+
+The system generates a fresh dataset for each network environment, providing a closer-to-real-world representation of how intrusion detection operates in production systems.
+
+---
+
 ##  Key Features
 
--  **Signature-Based Detection:** Matches traffic against predefined threat signatures (IP, protocol, etc.)
--  **Anomaly Detection (ML):** Uses `Isolation Forest` to identify unknown behavioral threats in the network
--  **Real-Time Packet Capture:** Uses `Scapy` and `PyShark` to collect traffic on your network interface
--  **Preprocessing & Feature Engineering:** Cleans and transforms raw `.pcap` into structured numerical data, which is also saved as a `.csv` file for further analysis
--  **Anomaly Visualization:** Clear scatter plots comparing normal vs anomalous traffic
--  **Modular Design:** Each phase is isolated for flexibility, testing, or integration
+-  **Signature-based detection** for known malicious patterns  
+-  **Machine learning–based** anomaly detection using `Isolation Forest`  
+-  **Real-time** packet capture and analysis  
+-  **Automated feature extraction** from raw network traffic  
+-  Visualization of anomalous vs normal traffic  
+-  **Modular architecture** for flexibility and extension  
 
 ---
 
 ##  How It Works
 
 1. **Capture Traffic**  
-   Real-time packet sniffing via `Scapy` and `.pcap` file generation
+   Live network traffic is captured using `Scapy` and saved for further analysis in `.pcap` format.
 
 2. **Extract & Process Features**  
-   Converts packets into structured CSV format with timestamps, IPs, ports, size, protocol, etc.
+   Captured packets are processed using `PyShark` to extract protocol-level and statistical features, which are converted into structured `CSV` data.
 
 3. **Signature-Based Detection**  
    Compares against known malicious patterns like:
    - IP: `192.168.1.100` → Internal attacker
    - Protocol: `HTTP` → Potential web attack
 
-4. **Anomaly-Based Detection**  
+4. **Behavior-Based Anomaly-Based Detection**  
    Trained `IsolationForest` model flags statistically unusual traffic (no labels needed)
 
-5. **Visualization**  
-   Optional scatter plot highlighting anomaly scores with red Xs for flagged traffic
+5. **Visualization and Alerts**  
+   Detected anomalies are visualized, and alerts are generated for suspicious traffic.
+
+---
+
+## Project Structure
+
+```text
+Hybrid-Intrusion-Detection-System/
+│
+├── Analysis/
+│   └── pyshark_analysis.py
+│       # Processes captured traffic using PyShark for protocol-level analysis
+│
+├── Capture/
+│   └── scapy_capture.py
+│       # Captures live network packets using Scapy
+│
+├── Captured_Data/
+│   └── tabular.py
+│       # Displays captured, preprocessed, and filtered traffic stored in CSV format
+│
+├── Detection/
+│   ├── behaviour_based.py
+│   │   # Machine learning–based anomaly detection
+│   └── signature_based.py
+│       # Signature-based intrusion detection
+│
+├── Models/
+│   └── anomaly_detector.pkl
+│       # Trained Isolation Forest model
+│
+├── main.py
+│   # Runs the complete detection pipeline
+│
+├── Train_model.py
+│   # Trains or updates the anomaly detection model
+│
+├── Visualise_anomalies.py
+│   # Generates visual plots for detected anomalies
+```
+---
+
+## Tech Stack
+
+- **Python** — Core programming language  
+- **Scapy** — Real-time packet capture and manipulation  
+- **PyShark** — Deep packet inspection and protocol analysis  
+- **Scikit-learn** — Machine learning (`Isolation Forest` for anomaly detection)  
+- **Pandas** — Data preprocessing and feature engineering  
+- **Matplotlib** — Anomaly visualization and traffic analysis plots
 
 ---
 
@@ -90,4 +147,30 @@ python Train_model.py
 ###  Signature-Based Alerts
 
 ![Signature Alerts](signature-alerts.png)
-```
+
+---
+
+## Use Cases
+
+- Network intrusion detection  
+- SOC traffic monitoring  
+- Behavioral anomaly detection  
+- Cybersecurity research and experimentation  
+
+---
+
+## Future Enhancements
+
+- MITRE ATT&CK technique mapping  
+- SIEM integration  
+- Real-time dashboard and alerting  
+- Advanced ML/DL models for traffic classification  
+
+---
+
+## Disclaimer
+
+This project is intended for **educational and research purposes only**.  
+Do **not** deploy in production environments without proper security review, testing, and validation.
+
+---
